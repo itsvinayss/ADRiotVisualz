@@ -233,7 +233,7 @@ function sidebarFuntionality(){
 }
 sidebarFuntionality();
     
-cursorEffect();
+
 
 // loader();
 
@@ -270,18 +270,9 @@ tl.from(".text span",{
 })
 
 
-// tl.from("#page1 .vertical-text", {
-//     x: -100,
-//     duration: 1,
-//     opacity: 0
-// })
 gsap.from("#circle1, #circle2, #circle3", {
     duration: 2.5,
     scale:0,
-    // ease: "bounce.out",
-    // x: -20,
-    // y: -200,
-    // delay:3,
     opacity:0,
     onComplete: function() {
         startBreathingEffect();
@@ -332,22 +323,6 @@ gsap.to(".arrow",{
     }
 })
 
-document.addEventListener("DOMContentLoaded", function() {
-    // Select the About Us link in the navigation
-    const aboutLink = document.querySelector('a[href="#about-us"]');
-    
-    // Select the About Us section
-    const aboutSection = document.getElementById("page2");
-
-    // Add a click event listener to the About Us link
-    aboutLink.addEventListener('click', function(event) {
-        // Prevent the default behavior of the link
-        event.preventDefault();
-
-        // Scroll to the About Us section
-        aboutSection.scrollIntoView({ behavior: 'smooth' });
-    });
-});
 
 
 const progressCircle = document.querySelector(".autoplay-progress svg");
@@ -386,6 +361,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+
 document.getElementById("menu-icon").onclick = function () {
   document.body.classList.add("blur-background");
   gsap.to("#sidebar", { width: "250px", duration: 0.5 });
@@ -396,170 +372,8 @@ document.getElementById("close-btn").onclick = function () {
   gsap.to("#sidebar", { width: "0", duration: 0.5 });
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    const sliders = document.querySelectorAll('.logos-slide');
-
-    sliders.forEach(slider => {
-        let isDown = false;
-        let startX;
-        let scrollLeft;
-        let isPaused = false;
-
-        slider.addEventListener('mousedown', (e) => {
-            isDown = true;
-            slider.classList.add('active');
-            startX = e.pageX - slider.offsetLeft;
-            scrollLeft = slider.scrollLeft;
-        });
-
-        slider.addEventListener('mouseleave', () => {
-            isDown = false;
-            slider.classList.remove('active');
-        });
-
-        slider.addEventListener('mouseup', () => {
-            isDown = false;
-            slider.classList.remove('active');
-        });
-
-        slider.addEventListener('mousemove', (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - slider.offsetLeft;
-            const walk = (x - startX) * 3; //scroll-fast
-            slider.scrollLeft = scrollLeft - walk;
-
-            // Adjust scrollLeft to create a continuous loop effect
-            if (slider.scrollLeft <= 0) {
-                slider.scrollLeft += slider.scrollWidth;
-            } else if (slider.scrollLeft >= slider.scrollWidth - slider.clientWidth) {
-                slider.scrollLeft -= slider.scrollWidth;
-            }
-        });
-
-        // Pause animation on hover
-        slider.addEventListener('mouseenter', () => {
-            isPaused = true;
-        });
-
-        slider.addEventListener('mouseleave', () => {
-            isPaused = false;
-        });
-
-        // Prevent default drag behavior on images
-        const images = slider.querySelectorAll('img');
-        images.forEach(img => {
-            img.addEventListener('dragstart', (e) => {
-                e.preventDefault();
-            });
-        });
-    });
-});
 
 
-
-
-// Function to handle swipe gestures (both touch and mouse)
-function swipeCarousel(containerId) {
-    const container = document.getElementById(containerId);
-    let isDragging = false;
-    let startX = 0;
-    let currentTranslate = 0;
-    let previousTranslate = 0;
-    let animationId = 0;
-
-    // Mouse events
-    container.addEventListener('mousedown', onMouseDown);
-
-    function onMouseDown(event) {
-        isDragging = true;
-        startX = event.clientX;
-        previousTranslate = currentTranslate;
-
-        container.style.cursor = 'grabbing'; // Change cursor on mousedown
-
-        // Add event listeners for mousemove and mouseup events
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onMouseUp);
-    }
-
-    function onMouseMove(event) {
-        if (isDragging) {
-            const diffX = event.clientX - startX;
-            currentTranslate = previousTranslate + diffX;
-
-            setSliderPosition();
-        }
-    }
-
-    function onMouseUp() {
-        isDragging = false;
-        container.style.cursor = 'grab'; // Reset cursor on mouseup
-
-        // Remove event listeners for mousemove and mouseup events
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
-
-        // Snap to nearest slide after releasing the mouse
-        snapToNearestSlide();
-    }
-
-    // Function to set slider position based on currentTranslate
-    function setSliderPosition() {
-        container.style.transform = `translateX(${currentTranslate}px)`;
-    }
-
-    // Function to snap to the nearest slide after releasing the mouse
-    function snapToNearestSlide() {
-        const slides = container.querySelectorAll('.logos-slide');
-        const slideWidth = slides[0].offsetWidth;
-        const totalSlides = slides.length;
-
-        // Calculate the index of the nearest slide based on currentTranslate
-        const index = Math.round(-currentTranslate / slideWidth);
-        const translateValue = -index * slideWidth;
-
-        // Apply the transform to container with animation
-        animateSlide(translateValue);
-
-        currentTranslate = translateValue;
-    }
-
-    // Function to animate slide transition
-    function animateSlide(targetTranslate) {
-        cancelAnimationFrame(animationId);
-
-        const startTime = performance.now();
-        const duration = 300; // Animation duration in milliseconds
-
-        function animate(currentTime) {
-            const elapsedTime = currentTime - startTime;
-            const progress = Math.min(elapsedTime / duration, 1);
-            const ease = easeOutCubic(progress);
-
-            const newTranslate = previousTranslate + (targetTranslate - previousTranslate) * ease;
-            container.style.transform = `translateX(${newTranslate}px)`;
-
-            if (progress < 1) {
-                animationId = requestAnimationFrame(animate);
-            }
-        }
-
-        animationId = requestAnimationFrame(animate);
-    }
-
-    // Easing function (Cubic Out)
-    function easeOutCubic(t) {
-        return 1 - Math.pow(1 - t, 3);
-    }
-}
-
-// Call swipeCarousel function for each slide container
-document.addEventListener('DOMContentLoaded', function() {
-    swipeCarousel('logos-slide1');
-    swipeCarousel('logos-slide2');
-    swipeCarousel('logos-slide3');
-});
 
 
 
